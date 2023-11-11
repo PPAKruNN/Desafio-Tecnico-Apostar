@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+
 export class ApplicationError extends Error {
     statusCode: number;
 
@@ -8,4 +10,8 @@ export class ApplicationError extends Error {
         this.message = message;
         this.statusCode = statusCode;
     }
+}
+
+export function invalidDataError(message: string) {
+    return new ApplicationError(httpStatus.UNPROCESSABLE_ENTITY, 'Invalid payload format', message);
 }
