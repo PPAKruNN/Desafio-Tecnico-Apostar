@@ -1,1 +1,1 @@
-// export * from "*.router.ts";
+export * from './participants.router';
