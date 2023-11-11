@@ -1,6 +1,7 @@
-//import { prisma } from "database/database";
+import { prisma } from '../src/database/database';
 
 export async function cleanDb() {
-    // clean tables in here.
-    // prisma.[table].deleteMany();
+    await prisma.bet.deleteMany();
+    await prisma.game.deleteMany();
+    await prisma.participant.deleteMany();
 }

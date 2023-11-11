@@ -17,7 +17,7 @@ describe('Is my application correctly installed?', () => {
 
     test('Should connect to db and be able to perform any operation', async () => {
         // Change this to a model of your prisma schema.
-        const response = await prisma.test.findMany();
+        const response = await prisma.game.findMany();
         expect(response.length).toBe(0);
     });
 
