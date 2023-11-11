@@ -1,11 +1,23 @@
 import { faker } from '@faker-js/faker';
+import { prisma } from 'database/database';
 // import { prisma } from '../../src/database/database';
 
 export function genParticipantPayload() {
     return {
         name: faker.person.fullName(),
-        balance: faker.number.int({ min: 10 }),
+        balance: faker.number.int({ min: 10, max: 599999 }),
     };
+}
+
+export async function genParticipant() {
+    const participant = await prisma.participant.create({
+        data: {
+            name: faker.person.fullName(),
+            balance: faker.number.int({ min: 10, max: 599999 }),
+        },
+    });
+
+    return participant;
 }
 
 // Participante

@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
 import { app } from '../../src/app';
 import { cleanDb } from '../helpers';
-import { genParticipantPayload } from '../factories/participants.factory';
+import { genParticipant, genParticipantPayload } from '../factories/participants.factory';
 
 const server = supertest(app);
 
@@ -65,16 +65,19 @@ describe(`POST ${path}`, () => {
 
 describe(`GET ${path}`, () => {
     test('should return all participants data inside an array and a 200 status', async () => {
+        const participant = await genParticipant();
+
         const response = await server.get(path);
 
         expect(response.statusCode).toBe(httpStatus.OK);
-        expect(response.body).toContain(
+        console.log(response.body);
+        expect(response.body).toContainEqual(
             expect.objectContaining({
                 id: expect.any(Number),
                 createdAt: expect.any(String),
                 updatedAt: expect.any(String),
-                name: expect.any(String),
-                balance: expect.any(Number),
+                name: participant.name,
+                balance: participant.balance,
             }),
         );
     });
