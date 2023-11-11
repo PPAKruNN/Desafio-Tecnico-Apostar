@@ -10,6 +10,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Test {
-  id Int @id @default(autoincrement())
+model Participant {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  balance   Int
+  Bet       Bet[]
+}
+
+model Game {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  homeTeamName  String
+  awayTeamName  String
+  homeTeamScore Int
+  awayTeamScore Int
+  isFinished    Boolean  @default(false)
+  Bet           Bet[]
+}
+
+model Bet {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  homeTeamScore Int
+  awayTeamScore Int
+  amountBet     Int
+
+  status    String @default("PENDING") //PENDING, WON, LOST 
+  amountWon Int
+
+  gameId        Int
+  game          Game        @relation(fields: [gameId], references: [id])
+  participantId Int
+  participant   Participant @relation(fields: [participantId], references: [id])
 }
