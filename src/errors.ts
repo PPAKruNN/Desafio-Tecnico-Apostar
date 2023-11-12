@@ -20,6 +20,6 @@ export function insufficientBalancePolicy(balance: number, minBalance: number) {
     return new ApplicationError(
         httpStatus.BAD_REQUEST,
         'Balance below minimum',
-        `Balance R$${balance} is lower than the minimum R$${minBalance}.`,
+        `Balance R$${balance / 100} is lower than the minimum R$${minBalance / 100}.`,
     );
 }

@@ -12,3 +12,11 @@ export type PostFinishGame = {
     homeTeamScore: number;
     awayTeamScore: number;
 };
+
+export type PostBet = {
+    homeTeamScore: number;
+    awayTeamScore: number;
+    amountBet: number;
+    gameId: number;
+    participantId: number;
+};
