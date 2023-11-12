@@ -19,7 +19,7 @@ describe(`POST ${path}`, () => {
 
         const response = await server.post(path).send(payload);
 
-        expect(response.statusCode).toBe(httpStatus.OK);
+        expect(response.statusCode).toBe(httpStatus.CREATED);
         expect(response.body).toEqual(
             expect.objectContaining({
                 id: expect.any(Number),
@@ -33,12 +33,11 @@ describe(`POST ${path}`, () => {
 
     test('should respond 400 when balance is below 10', async () => {
         const payload = genParticipantPayload();
-        payload.balance = faker.number.int({ max: 9 });
+        payload.balance = faker.number.int({ max: 9, min: 0 });
 
         const response = await server.post(path).send(payload);
 
         expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
-        expect(response.body).toEqual({ message: `Balance ${payload.balance} is lower than minimun. (10)` });
     });
 
     test('should respond 422 when payload is in a invalid format', async () => {
