@@ -4,10 +4,10 @@ import { ApplicationError } from '../errors';
 
 export function errorHandler(
     err: ApplicationError | Error,
-    _req?: Request,
-    res?: Response,
+    req: Request,
+    res: Response,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _next?: NextFunction,
+    next: NextFunction,
 ) {
     // If not a ApplicationError, send 500.
     if (!(err instanceof ApplicationError)) return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
