@@ -1,7 +1,11 @@
 import { Bet, Game } from '@prisma/client';
 import { GamesRepository } from 'repositories/games.repository';
 
-async function Create() {}
+async function Create(homeTeamName: string, awayTeamName: string) {
+    const result = await GamesRepository.Create(homeTeamName, awayTeamName);
+
+    return result;
+}
 
 async function Finish() {}
 // Finish SubFunctions

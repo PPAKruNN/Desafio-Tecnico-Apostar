@@ -23,11 +23,23 @@ async function ReadById(id: number): Promise<Game & { Bet: Bet[] }> {
         throw resourceNotFound('Game');
     }
 }
-// async function Create(): Promise<Game> {}
+async function Create(homeTeamName: string, awayTeamName: string): Promise<Game> {
+    const result = await prisma.game.create({
+        data: {
+            awayTeamName,
+            homeTeamName,
+            awayTeamScore: 0,
+            homeTeamScore: 0,
+        },
+    });
+
+    return result;
+}
 // async function Finish(): Promise<Game> {}
 
 export const GamesRepository = {
     ReadAll,
     CheckExistence,
     ReadById,
+    Create,
 };
