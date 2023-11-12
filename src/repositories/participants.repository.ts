@@ -13,7 +13,17 @@ export async function Create(name: string, balance: number): Promise<Participant
     return response;
 }
 
+export async function UpdateParticipant(amountWon: number, participantId: number) {
+    const response = await prisma.participant.update({
+        data: { balance: { increment: amountWon } },
+        where: { id: participantId },
+    });
+
+    return response;
+}
+
 export const ParticipantsRepository = {
     ReadMany,
     Create,
+    UpdateParticipant,
 };

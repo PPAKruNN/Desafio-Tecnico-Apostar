@@ -35,11 +35,22 @@ async function Create(homeTeamName: string, awayTeamName: string): Promise<Game>
 
     return result;
 }
-// async function Finish(): Promise<Game> {}
+async function Finish(id: number, homeTeamScore: number, awayTeamScore: number): Promise<Game> {
+    try {
+        const result = await prisma.game.update({
+            data: { awayTeamScore, homeTeamScore, isFinished: true },
+            where: { id, isFinished: false },
+        });
+        return result;
+    } catch (error) {
+        throw resourceNotFound('Game', 'or is already finished');
+    }
+}
 
 export const GamesRepository = {
     ReadAll,
     CheckExistence,
     ReadById,
     Create,
+    Finish,
 };

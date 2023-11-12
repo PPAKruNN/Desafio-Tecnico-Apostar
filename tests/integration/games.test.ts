@@ -62,26 +62,26 @@ describe(`POST ${path}`, () => {
 
             const result = await server.post(`${path}/${game.id}/finish`).send(payload);
             expect(result.statusCode).toBe(httpStatus.OK);
-            expect(result).toEqual(
+            expect(result.body).toEqual(
                 expect.objectContaining<Game>({
                     id: game.id,
                     createdAt: expect.any(String),
                     updatedAt: expect.any(String),
                     homeTeamName: game.homeTeamName,
                     awayTeamName: game.awayTeamName,
-                    homeTeamScore: payload.awayTeamScore,
+                    homeTeamScore: payload.homeTeamScore,
                     awayTeamScore: payload.awayTeamScore,
                     isFinished: true,
                 }),
             );
         });
 
-        test('should respond with 400 if try to finish a game that is already finished', async () => {
+        test('should respond with 404 if try to finish a game that is already finished', async () => {
             const game = await genFinishedGame();
             const payload = genFinishGamePayload();
 
             const result = await server.post(`${path}/${game.id}/finish`).send(payload);
-            expect(result.statusCode).toBe(httpStatus.BAD_REQUEST);
+            expect(result.statusCode).toBe(httpStatus.NOT_FOUND);
         });
 
         test("should update game's bets status and amountWon", async () => {
@@ -103,7 +103,7 @@ describe(`POST ${path}`, () => {
             expect(updatedBet2.status).toBe('LOST');
 
             expect(updatedBet1.amountWon).toBeGreaterThan(0);
-            expect(updatedBet2.status).toBe(0);
+            expect(updatedBet2.amountWon).toBe(0);
         });
 
         test("should affect game's participants balance if they won", async () => {
@@ -126,8 +126,9 @@ describe(`POST ${path}`, () => {
         test('should return 404 if id is invalid', async () => {
             const game = await genGame();
             await prisma.game.delete({ where: { id: game.id } });
+            const payload = await genFinishGamePayload();
 
-            const result = await server.post(`${path}/${game.id}/finish`);
+            const result = await server.post(`${path}/${game.id}/finish`).send(payload);
             expect(result.statusCode).toBe(httpStatus.NOT_FOUND);
         });
 

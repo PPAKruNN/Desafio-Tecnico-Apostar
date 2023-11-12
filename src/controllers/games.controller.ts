@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { PostGame } from 'protocols';
+import { PostFinishGame, PostGame } from 'protocols';
 import { GamesService } from 'services/games.services';
 
 async function postGame(req: Request, res: Response) {
@@ -11,7 +11,14 @@ async function postGame(req: Request, res: Response) {
     return res.status(httpStatus.CREATED).send(response);
 }
 
-async function postFinishGame() {}
+async function postFinishGame(req: Request, res: Response) {
+    const { id } = req.params;
+    const { awayTeamScore, homeTeamScore } = req.body as PostFinishGame;
+
+    const response = await GamesService.Finish(Number(id), homeTeamScore, awayTeamScore);
+
+    return res.send(response);
+}
 
 async function getGames(_req: Request, res: Response) {
     const response = await GamesService.ReadAll();

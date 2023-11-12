@@ -24,6 +24,6 @@ export function insufficientBalancePolicy(balance: number, minBalance: number) {
     );
 }
 
-export function resourceNotFound(resource: string) {
-    return new ApplicationError(httpStatus.NOT_FOUND, 'Not found', `${resource} was not found`);
+export function resourceNotFound(resource: string, extra = '') {
+    return new ApplicationError(httpStatus.NOT_FOUND, 'Not found', `${resource} was not found ${extra}`);
 }
