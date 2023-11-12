@@ -69,7 +69,6 @@ describe(`GET ${path}`, () => {
         const response = await server.get(path);
 
         expect(response.statusCode).toBe(httpStatus.OK);
-        console.log(response.body);
         expect(response.body).toContainEqual(
             expect.objectContaining({
                 id: expect.any(Number),
