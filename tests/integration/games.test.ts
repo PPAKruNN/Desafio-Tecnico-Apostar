@@ -12,7 +12,7 @@ const server = supertest(app);
 
 const path = '/games';
 
-beforeAll(async () => {
+beforeEach(async () => {
     await cleanDb();
 });
 
@@ -113,7 +113,11 @@ describe(`GET ${path}`, () => {
         const response = await server.get(path);
 
         expect(response.statusCode).toBe(httpStatus.OK);
-        expect(response.body).toContainEqual(expect.objectContaining(newGame));
+        expect(response.body).toContainEqual({
+            ...newGame,
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+        });
     });
 
     test("Should return 200 with empty array if doesn't have games registered games", async () => {
