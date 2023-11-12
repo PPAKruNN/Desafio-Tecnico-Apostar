@@ -74,33 +74,35 @@ describe(`POST ${path}`, () => {
                 }),
             );
         });
-    });
 
-    test('should return 404 if id is invalid', async () => {
-        const game = await genGame();
-        await prisma.game.delete({ where: { id: game.id } });
+        test.todo('should respond with 400 if try to finish a game that is already finished');
 
-        const result = await server.post(`${path}/${game.id}/finish`);
-        expect(result.statusCode).toBe(httpStatus.NOT_FOUND);
-    });
+        test('should return 404 if id is invalid', async () => {
+            const game = await genGame();
+            await prisma.game.delete({ where: { id: game.id } });
 
-    test('should return 422 if data is in invalid format or empty', async () => {
-        const game = await genGame();
+            const result = await server.post(`${path}/${game.id}/finish`);
+            expect(result.statusCode).toBe(httpStatus.NOT_FOUND);
+        });
 
-        const invalidPayload = {
-            homeTeamName: faker.color.lch(),
-            awayTeamName: faker.commerce.department(),
-        };
+        test('should return 422 if data is in invalid format or empty', async () => {
+            const game = await genGame();
 
-        const results = await Promise.all([
-            server.post(`${path}/${game.id}/finish`).send(invalidPayload),
-            server.post(`${path}/${game.id}/finish`).send({}),
-            server.post(`${path}/${game.id}/finish`),
-        ]);
+            const invalidPayload = {
+                homeTeamName: faker.color.lch(),
+                awayTeamName: faker.commerce.department(),
+            };
 
-        expect(results[0].statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
-        expect(results[1].statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
-        expect(results[2].statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+            const results = await Promise.all([
+                server.post(`${path}/${game.id}/finish`).send(invalidPayload),
+                server.post(`${path}/${game.id}/finish`).send({}),
+                server.post(`${path}/${game.id}/finish`),
+            ]);
+
+            expect(results[0].statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+            expect(results[1].statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+            expect(results[2].statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+        });
     });
 });
 

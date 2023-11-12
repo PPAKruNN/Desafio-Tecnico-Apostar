@@ -41,3 +41,21 @@ export function genFinishGamePayload() {
 
     return payload;
 }
+
+export async function genFinishedGame(): Promise<Game> {
+    const payload: PostFinishGame & PostGame = {
+        homeTeamName: faker.company.name(),
+        awayTeamName: faker.company.name(),
+        awayTeamScore: faker.number.int({ min: 0 }),
+        homeTeamScore: faker.number.int({ min: 0 }),
+    };
+
+    const game = await prisma.game.create({
+        data: {
+            ...payload,
+            isFinished: true,
+        },
+    });
+
+    return game;
+}
