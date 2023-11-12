@@ -2,9 +2,10 @@ import supertest from 'supertest';
 import { Bet, Game } from '@prisma/client';
 import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
-import { genFinishGamePayload, genGame, genGamePayload } from '../factories/games.factory';
+import { genFinishGamePayload, genFinishedGame, genGame, genGamePayload } from '../factories/games.factory';
 import { cleanDb } from '../helpers';
 import { genBet } from '../factories/bet.factory';
+import { genParticipant } from '../factories/participants.factory';
 import { app } from 'app';
 import { prisma } from 'database/database';
 
@@ -75,7 +76,52 @@ describe(`POST ${path}`, () => {
             );
         });
 
-        test.todo('should respond with 400 if try to finish a game that is already finished');
+        test('should respond with 400 if try to finish a game that is already finished', async () => {
+            const game = await genFinishedGame();
+            const payload = genFinishGamePayload();
+
+            const result = await server.post(`${path}/${game.id}/finish`).send(payload);
+            expect(result.statusCode).toBe(httpStatus.BAD_REQUEST);
+        });
+
+        test("should update game's bets status and amountWon", async () => {
+            const game = await genGame();
+            const bet1 = await genBet({ game });
+            const bet2 = await genBet({ game });
+
+            // The game result are going to be equal to bet1 prediction.
+            const payload = genFinishGamePayload();
+            payload.awayTeamScore = bet1.awayTeamScore;
+            payload.homeTeamScore = bet1.homeTeamScore;
+
+            await server.post(`${path}/${game.id}/finish`).send(payload);
+
+            const updatedBet1 = await prisma.bet.findUnique({ where: { id: bet1.id } });
+            const updatedBet2 = await prisma.bet.findUnique({ where: { id: bet2.id } });
+
+            expect(updatedBet1.status).toBe('WON');
+            expect(updatedBet2.status).toBe('LOST');
+
+            expect(updatedBet1.amountWon).toBeGreaterThan(0);
+            expect(updatedBet2.status).toBe(0);
+        });
+
+        test("should affect game's participants balance if they won", async () => {
+            const game = await genGame();
+            const oldParticipant = await genParticipant();
+            const bet = await genBet({ participant: oldParticipant, game });
+
+            // The game result are going to be equal to bet prediction.
+            const payload = genFinishGamePayload();
+            payload.awayTeamScore = bet.awayTeamScore;
+            payload.homeTeamScore = bet.homeTeamScore;
+
+            await server.post(`${path}/${game.id}/finish`).send(payload);
+
+            const updatedParticipant = await prisma.participant.findUnique({ where: { id: oldParticipant.id } });
+
+            expect(updatedParticipant.balance).toBeGreaterThan(oldParticipant.balance);
+        });
 
         test('should return 404 if id is invalid', async () => {
             const game = await genGame();
