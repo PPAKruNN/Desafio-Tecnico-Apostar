@@ -36,7 +36,6 @@ export async function genBet({ game, participant }: genBet) {
             awayTeamScore: faker.number.int({ max: 1000000 }),
             homeTeamScore: faker.number.int({ max: 1000000 }),
             amountBet: faker.number.int({ max: 1000000 }),
-            amountWon: -1,
         },
     });
 

@@ -1,3 +1,4 @@
+import { Bet, Game } from '@prisma/client';
 import { GamesRepository } from 'repositories/games.repository';
 
 async function Create() {}
@@ -9,11 +10,26 @@ async function Finish() {}
 // async function RewardCalculusPolicy() {}
 
 async function ReadAll() {
-    const response = await GamesRepository.ReadAll();
+    const result = await GamesRepository.ReadAll();
 
-    return response;
+    return result;
 }
-async function ReadOne() {}
+async function ReadOne(id: number) {
+    const rawResult = await GamesRepository.ReadById(id);
+
+    const result = formatBetRawResult(rawResult);
+
+    return result;
+}
+
+function formatBetRawResult(obj: Game & { Bet: Bet[] }) {
+    const bets = obj.Bet;
+    delete obj.Bet;
+
+    const newObj: Game & { bets: Bet[] } = { ...obj, bets };
+
+    return newObj;
+}
 
 export const GamesService = {
     Create,

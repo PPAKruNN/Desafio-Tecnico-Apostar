@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { Game } from '@prisma/client';
+import { Bet, Game } from '@prisma/client';
 import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
 import { genFinishGamePayload, genGame, genGamePayload } from '../factories/games.factory';
@@ -135,12 +135,18 @@ describe(`GET ${path}`, () => {
             const response = await server.get(`${path}/${newGame.id}`);
 
             expect(response.statusCode).toBe(httpStatus.OK);
-            expect(response).toEqual(
-                expect.objectContaining({
-                    ...newGame,
-                    bets: expect.arrayContaining(expect.objectContaining(bet)),
-                }),
-            );
+            expect(response.body).toEqual({
+                ...newGame,
+                bets: expect.arrayContaining<Bet>([
+                    {
+                        ...bet,
+                        createdAt: expect.any(String),
+                        updatedAt: expect.any(String),
+                    },
+                ]),
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
+            });
         });
 
         test('Should return a game data with a empty bet array', async () => {
@@ -149,12 +155,17 @@ describe(`GET ${path}`, () => {
             const response = await server.get(`${path}/${newGame.id}`);
 
             expect(response.statusCode).toBe(httpStatus.OK);
-            expect(response).toEqual(
-                expect.objectContaining({
-                    ...newGame,
-                    bets: [],
-                }),
-            );
+            expect(response.body).toEqual({
+                ...newGame,
+                bets: [],
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
+            });
+        });
+
+        test('Should return 422 if id is in invalid format', async () => {
+            const response = await server.get(`${path}/${-faker.number.float({ max: 8888888 })}`);
+            expect(response.statusCode).toBe(httpStatus.UNPROCESSABLE_ENTITY);
         });
 
         test("Should return 404 if id doesn't exist", async () => {

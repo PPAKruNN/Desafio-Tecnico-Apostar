@@ -11,7 +11,12 @@ async function getGames(_req: Request, res: Response) {
     return res.send(response);
 }
 
-async function getGameById() {}
+async function getGameById(req: Request, res: Response) {
+    const { id } = req.params;
+    const response = await GamesService.ReadOne(Number(id));
+
+    return res.send(response);
+}
 
 export const GamesController = {
     postGame,

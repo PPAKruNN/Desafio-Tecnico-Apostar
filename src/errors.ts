@@ -23,3 +23,7 @@ export function insufficientBalancePolicy(balance: number, minBalance: number) {
         `Balance R$${balance / 100} is lower than the minimum R$${minBalance / 100}.`,
     );
 }
+
+export function resourceNotFound(resource: string) {
+    return new ApplicationError(httpStatus.NOT_FOUND, 'Not found', `${resource} was not found`);
+}
