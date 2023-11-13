@@ -1,9 +1,13 @@
+# Desafio técnico - Quer apostar quanto?
+
+-    [Link do deploy](https://desafio-tecnico-l658.onrender.com)
+
 # Stack:
 
-Express
-Typescript
-Jest (+SuperTest, faker)
-Prisma
+-    Express
+-    Typescript
+-    Jest (+SuperTest, faker)
+-    Prisma
 
 ## Prerequisites
 
