@@ -1,4 +1,4 @@
-# Template for back-end using the stack:
+# Stack:
 
 Express
 Typescript
