@@ -22,25 +22,40 @@ describe(`POST ${path}`, () => {
         const game = await genGame();
         const payload = await genBetPayload({ game });
 
+        // Ensure balance is greater than the amount bet;
+        payload.amountBet = 1;
+
         const response = await server.post(path).send(payload);
         const databaseConfirm = await prisma.bet.findFirst({ where: { participantId: payload.participantId } });
 
-        const objectMatcher = expect.objectContaining<Bet>({
+        const objectMatcher: Partial<Bet> = {
             id: expect.any(Number),
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
             homeTeamScore: payload.homeTeamScore,
             awayTeamScore: payload.awayTeamScore,
             amountBet: payload.amountBet,
             gameId: payload.gameId,
             participantId: payload.participantId,
-            amountWon: null,
             status: 'PENDING',
-        });
+        };
 
         expect(response.statusCode).toBe(httpStatus.CREATED);
-        expect(response.body).toEqual(objectMatcher);
-        expect(databaseConfirm).toEqual(objectMatcher);
+        expect(response.body).toEqual(
+            expect.objectContaining({
+                ...objectMatcher,
+                amountWon: null,
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
+            }),
+        );
+
+        expect(databaseConfirm).toMatchObject(
+            expect.objectContaining({
+                ...objectMatcher,
+                amountWon: null,
+                createdAt: expect.any(Date),
+                updatedAt: expect.any(Date),
+            }),
+        );
     });
 
     test('should discount users balance when creating a bet', async () => {
@@ -63,13 +78,13 @@ describe(`POST ${path}`, () => {
         expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
     });
 
-    test('should return 404 if bet in a finished game', async () => {
+    test('should return 400 if bet in a finished game', async () => {
         const game = await genFinishedGame();
         const payload = await genBetPayload({ game });
 
         const response = await server.post(path).send(payload);
 
-        expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
+        expect(response.statusCode).toBe(httpStatus.BAD_REQUEST);
     });
 
     test('should return 404 if participantId or gameId is a invalid id', async () => {
@@ -80,7 +95,7 @@ describe(`POST ${path}`, () => {
 
         const response = await server.post(path).send(payload);
 
-        expect(response).toBe(httpStatus.NOT_FOUND);
+        expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
     });
 
     test('should return 422 if payload is invalid or empty', async () => {

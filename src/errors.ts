@@ -27,3 +27,19 @@ export function insufficientBalancePolicy(balance: number, minBalance: number) {
 export function resourceNotFound(resource: string, extra = '') {
     return new ApplicationError(httpStatus.NOT_FOUND, 'Not found', `${resource} was not found ${extra}`);
 }
+
+export function insufficientBalanceToBet(balance: number, betAmount: number) {
+    return new ApplicationError(
+        httpStatus.BAD_REQUEST,
+        'Balance below minimum',
+        `Bet Amount R$${betAmount / 100} is greater than your balance $${balance / 100}.`,
+    );
+}
+
+export function gameAlreadyFinished() {
+    return new ApplicationError(
+        httpStatus.BAD_REQUEST,
+        'Cannot Bet in a finished game',
+        `Cannot bet in a game that is already finished`,
+    );
+}

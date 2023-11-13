@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { PostParticipant } from 'protocols';
-import { ParticipantsService } from 'services/participants.service';
+import { ParticipantsService } from 'services/participants.services';
 
 export async function getAll(_req: Request, res: Response) {
     const response = await ParticipantsService.Read();

@@ -17,9 +17,9 @@ export async function genBetPayload({ game, participant }: genBet): Promise<Post
     const payload: PostBet = {
         gameId: newGame.id,
         participantId: author.id,
-        awayTeamScore: faker.number.int({ max: 1000000 }),
-        homeTeamScore: faker.number.int({ max: 1000000 }),
-        amountBet: faker.number.int({ max: 1000000 }),
+        awayTeamScore: faker.number.int({ min: 0, max: 1000000 }),
+        homeTeamScore: faker.number.int({ min: 0, max: 1000000 }),
+        amountBet: faker.number.int({ min: 0, max: author.balance }),
     };
 
     return payload;
@@ -33,9 +33,9 @@ export async function genBet({ game, participant }: genBet) {
         data: {
             game: { connect: newGame },
             participant: { connect: author },
-            awayTeamScore: faker.number.int({ max: 1000000 }),
-            homeTeamScore: faker.number.int({ max: 1000000 }),
-            amountBet: faker.number.int({ max: 1000000 }),
+            awayTeamScore: faker.number.int({ min: 0, max: 1000000 }),
+            homeTeamScore: faker.number.int({ min: 0, max: 1000000 }),
+            amountBet: faker.number.int({ min: 0, max: author.balance }),
         },
     });
 
