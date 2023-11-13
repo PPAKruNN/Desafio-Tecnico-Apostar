@@ -1,6 +1,6 @@
 import { Participant } from '@prisma/client';
-import { insufficientBalancePolicy } from 'errors';
-import { ParticipantsRepository } from 'repositories/participants.repository';
+import { insufficientBalancePolicy } from '../errors';
+import { ParticipantsRepository } from '../repositories/participants.repository';
 
 export async function Read(): Promise<Participant[]> {
     const response: Participant[] = await ParticipantsRepository.ReadMany();

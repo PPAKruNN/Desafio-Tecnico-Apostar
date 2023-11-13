@@ -1,6 +1,6 @@
 import { Bet, Game } from '@prisma/client';
-import { prisma } from 'database/database';
-import { resourceNotFound } from 'errors';
+import { prisma } from '../database/database';
+import { resourceNotFound } from '../errors';
 
 async function ReadAll(): Promise<Game[]> {
     const result = await prisma.game.findMany();

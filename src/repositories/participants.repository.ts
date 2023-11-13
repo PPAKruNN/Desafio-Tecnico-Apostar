@@ -1,6 +1,6 @@
 import { Participant } from '@prisma/client';
-import { prisma } from 'database/database';
-import { resourceNotFound } from 'errors';
+import { prisma } from '../database/database';
+import { resourceNotFound } from '../errors';
 
 export async function ReadMany(): Promise<Participant[]> {
     const result = await prisma.participant.findMany();

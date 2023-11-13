@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { PostFinishGame, PostGame } from 'protocols';
+import { PostFinishGame, PostGame } from '../protocols';
 
 export const postGamePayload = Joi.object<PostGame>({
     awayTeamName: Joi.string().trim().required(),

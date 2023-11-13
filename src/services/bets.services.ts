@@ -1,8 +1,8 @@
-import { gameAlreadyFinished, insufficientBalanceToBet } from 'errors';
-import { PostBet } from 'protocols';
-import { BetsRepository } from 'repositories/bets.repository';
-import { GamesRepository } from 'repositories/games.repository';
-import { ParticipantsRepository } from 'repositories/participants.repository';
+import { gameAlreadyFinished, insufficientBalanceToBet } from '../errors';
+import { PostBet } from '../protocols';
+import { BetsRepository } from '../repositories/bets.repository';
+import { GamesRepository } from '../repositories/games.repository';
+import { ParticipantsRepository } from '../repositories/participants.repository';
 
 async function Create(data: PostBet) {
     await CheckBetPrerequisites(data.gameId, data.participantId, data.amountBet);

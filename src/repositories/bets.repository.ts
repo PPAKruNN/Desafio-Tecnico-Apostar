@@ -1,7 +1,7 @@
 import { Bet } from '@prisma/client';
-import { prisma } from 'database/database';
-import { resourceNotFound } from 'errors';
-import { PostBet } from 'protocols';
+import { prisma } from '../database/database';
+import { resourceNotFound } from '../errors';
+import { PostBet } from '../protocols';
 
 async function ReadBetsByGame(gameId: number): Promise<Bet[]> {
     try {

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { GamesController } from 'controllers/games.controller';
-import { validateBody, validateParams } from 'middlewares/validation.middleware';
-import { ParamsId } from 'schemas/utils.schema';
-import { postFinishGamePayload, postGamePayload } from 'schemas/games.schemas';
+import { GamesController } from '../controllers/games.controller';
+import { validateBody, validateParams } from '../middlewares/validation.middleware';
+import { ParamsId } from '../schemas/utils.schema';
+import { postFinishGamePayload, postGamePayload } from '../schemas/games.schemas';
 
 export const GamesRouter = Router();
 

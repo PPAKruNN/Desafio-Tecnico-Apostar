@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { PostBet } from 'protocols';
+import { PostBet } from '../protocols';
 
 export const postBetPayload = Joi.object<PostBet>({
     amountBet: Joi.number().integer().positive().required(),

@@ -1,7 +1,7 @@
 import { Bet, Game } from '@prisma/client';
-import { BetsRepository } from 'repositories/bets.repository';
-import { GamesRepository } from 'repositories/games.repository';
-import { ParticipantsRepository } from 'repositories/participants.repository';
+import { BetsRepository } from '../repositories/bets.repository';
+import { GamesRepository } from '../repositories/games.repository';
+import { ParticipantsRepository } from '../repositories/participants.repository';
 
 export type RewardType = {
     amountWon: number;

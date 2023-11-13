@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { PostFinishGame, PostGame } from 'protocols';
-import { GamesService } from 'services/games.services';
+import { GamesService } from '../services/games.services';
+import { PostFinishGame, PostGame } from '../protocols';
 
 async function postGame(req: Request, res: Response) {
     const { homeTeamName, awayTeamName } = req.body as PostGame;

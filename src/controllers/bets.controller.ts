@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { PostBet } from 'protocols';
-import { BetsService } from 'services/bets.services';
+import { PostBet } from '../protocols';
+import { BetsService } from '../services/bets.services';
 
 async function postBet(req: Request, res: Response) {
     const payload = req.body as PostBet;
