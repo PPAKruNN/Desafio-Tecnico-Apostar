@@ -10,6 +10,20 @@ Prisma
 -   Node v18.16.0
 -   PostgreSQL v14.9
 
+## Check the tests:
+
+For running tests, run this command:
+
+```
+npm test
+```
+
+For check the test coverage, run:
+
+```
+npm test -- --coverage
+```
+
 ## How to run?
 
 ### Short Path:
