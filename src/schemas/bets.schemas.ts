@@ -1,7 +1,7 @@
 import Joi from 'joi';
-import { PostBet } from '../protocols';
+import { PostBetType } from '../protocols';
 
-export const postBetPayload = Joi.object<PostBet>({
+export const PostBetPayload = Joi.object<PostBetType>({
     amountBet: Joi.number().integer().positive().required(),
     awayTeamScore: Joi.number().integer().positive().allow(0).required(),
     homeTeamScore: Joi.number().integer().positive().allow(0).required(),

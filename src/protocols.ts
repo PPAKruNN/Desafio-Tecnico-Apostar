@@ -1,19 +1,19 @@
-export type PostParticipant = {
+export type PostParticipantType = {
     name: string;
     balance: number;
 };
 
-export type PostGame = {
+export type PostGameType = {
     homeTeamName: string;
     awayTeamName: string;
 };
 
-export type PostFinishGame = {
+export type PostFinishGameType = {
     homeTeamScore: number;
     awayTeamScore: number;
 };
 
-export type PostBet = {
+export type PostBetType = {
     homeTeamScore: number;
     awayTeamScore: number;
     amountBet: number;

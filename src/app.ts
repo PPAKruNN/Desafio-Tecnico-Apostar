@@ -2,7 +2,7 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { errorHandler } from './middlewares/error-handler.middleware';
+import { ErrorHandler } from './middlewares/error-handler.middleware';
 import { ParticipantsRouter } from './routers/participants.router';
 import { GamesRouter } from './routers/games.router';
 import { BetsRouter } from './routers/bets.router';
@@ -16,6 +16,6 @@ app.use(cors())
     .use('/participants', ParticipantsRouter)
     .use('/games', GamesRouter)
     .use('/bets', BetsRouter)
-    .use(errorHandler);
+    .use(ErrorHandler);
 
 export { app };

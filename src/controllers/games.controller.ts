@@ -1,41 +1,41 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { GamesService } from '../services/games.services';
-import { PostFinishGame, PostGame } from '../protocols';
+import { PostFinishGameType, PostGameType } from '../protocols';
 
-async function postGame(req: Request, res: Response) {
-    const { homeTeamName, awayTeamName } = req.body as PostGame;
+async function PostGame(req: Request, res: Response) {
+    const { homeTeamName, awayTeamName } = req.body as PostGameType;
 
-    const response = await GamesService.Create(homeTeamName, awayTeamName);
+    const newGame = await GamesService.Create(homeTeamName, awayTeamName);
 
-    return res.status(httpStatus.CREATED).send(response);
+    return res.status(httpStatus.CREATED).send(newGame);
 }
 
-async function postFinishGame(req: Request, res: Response) {
+async function PostFinishGame(req: Request, res: Response) {
     const { id } = req.params;
-    const { awayTeamScore, homeTeamScore } = req.body as PostFinishGame;
+    const { awayTeamScore, homeTeamScore } = req.body as PostFinishGameType;
 
-    const response = await GamesService.Finish(Number(id), homeTeamScore, awayTeamScore);
+    const finishedGame = await GamesService.Finish(Number(id), homeTeamScore, awayTeamScore);
 
-    return res.send(response);
+    return res.send(finishedGame);
 }
 
-async function getGames(_req: Request, res: Response) {
-    const response = await GamesService.ReadAll();
+async function GetGames(_req: Request, res: Response) {
+    const games = await GamesService.ReadAll();
 
-    return res.send(response);
+    return res.send(games);
 }
 
-async function getGameById(req: Request, res: Response) {
+async function GetGameById(req: Request, res: Response) {
     const { id } = req.params;
-    const response = await GamesService.ReadOne(Number(id));
+    const gameWithBets = await GamesService.ReadOne(Number(id));
 
-    return res.send(response);
+    return res.send(gameWithBets);
 }
 
 export const GamesController = {
-    postGame,
-    postFinishGame,
-    getGames,
-    getGameById,
+    PostGame,
+    PostFinishGame,
+    GetGames,
+    GetGameById,
 };

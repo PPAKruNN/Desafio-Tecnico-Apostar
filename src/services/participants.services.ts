@@ -1,25 +1,25 @@
 import { Participant } from '@prisma/client';
-import { insufficientBalancePolicy } from '../errors';
+import { InsufficientBalancePolicy } from '../errors';
 import { ParticipantsRepository } from '../repositories/participants.repository';
 
 export async function Read(): Promise<Participant[]> {
-    const response: Participant[] = await ParticipantsRepository.ReadMany();
+    const participant: Participant[] = await ParticipantsRepository.ReadMany();
 
-    return response;
+    return participant;
 }
 
 export async function Create(name: string, balance: number): Promise<Participant> {
-    minBalancePolicy(balance);
+    MinBalancePolicy(balance);
 
     const newParticipant = await ParticipantsRepository.Create(name, balance);
 
     return newParticipant;
 }
 
-function minBalancePolicy(balance: number) {
+function MinBalancePolicy(balance: number) {
     const minBalance = 10;
 
-    if (balance < minBalance) throw insufficientBalancePolicy(balance, minBalance);
+    if (balance < minBalance) throw InsufficientBalancePolicy(balance, minBalance);
 }
 
 export const ParticipantsService = {

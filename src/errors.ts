@@ -12,11 +12,11 @@ export class ApplicationError extends Error {
     }
 }
 
-export function invalidDataError(message: string) {
+export function InvalidDataError(message: string) {
     return new ApplicationError(httpStatus.UNPROCESSABLE_ENTITY, 'Invalid payload format', message);
 }
 
-export function insufficientBalancePolicy(balance: number, minBalance: number) {
+export function InsufficientBalancePolicy(balance: number, minBalance: number) {
     return new ApplicationError(
         httpStatus.BAD_REQUEST,
         'Balance below minimum',
@@ -24,11 +24,11 @@ export function insufficientBalancePolicy(balance: number, minBalance: number) {
     );
 }
 
-export function resourceNotFound(resource: string, extra = '') {
+export function ResourceNotFound(resource: string, extra = '') {
     return new ApplicationError(httpStatus.NOT_FOUND, 'Not found', `${resource} was not found ${extra}`);
 }
 
-export function insufficientBalanceToBet(balance: number, betAmount: number) {
+export function InsufficientBalanceToBet(balance: number, betAmount: number) {
     return new ApplicationError(
         httpStatus.BAD_REQUEST,
         'Balance below minimum',
@@ -36,7 +36,7 @@ export function insufficientBalanceToBet(balance: number, betAmount: number) {
     );
 }
 
-export function gameAlreadyFinished() {
+export function GameAlreadyFinished() {
     return new ApplicationError(
         httpStatus.BAD_REQUEST,
         'Cannot Bet in a finished game',

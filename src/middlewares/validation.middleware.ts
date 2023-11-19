@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import { ObjectSchema } from 'joi';
-import { invalidDataError } from '../errors';
+import { InvalidDataError } from '../errors';
 
-export function validateBody<T>(schema: ObjectSchema<T>): ValidationMiddleware {
-    return validate(schema, 'body');
+export function ValidateBody<T>(schema: ObjectSchema<T>): ValidationMiddleware {
+    return Validate(schema, 'body');
 }
 
-export function validateParams<T>(schema: ObjectSchema<T>): ValidationMiddleware {
-    return validate(schema, 'params');
+export function ValidateParams<T>(schema: ObjectSchema<T>): ValidationMiddleware {
+    return Validate(schema, 'params');
 }
 
-function validate(schema: ObjectSchema, type: 'body' | 'params') {
+function Validate(schema: ObjectSchema, type: 'body' | 'params') {
     return (req: Request, _res: Response, next: NextFunction) => {
         const { error } = schema.validate(req[type], { abortEarly: false });
 
@@ -19,7 +19,7 @@ function validate(schema: ObjectSchema, type: 'body' | 'params') {
         } else {
             let errorMessage = '';
             error.details.forEach((d) => (errorMessage += d.message + ' '));
-            throw invalidDataError(errorMessage);
+            throw InvalidDataError(errorMessage);
         }
     };
 }

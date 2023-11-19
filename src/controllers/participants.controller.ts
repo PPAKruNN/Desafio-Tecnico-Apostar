@@ -1,23 +1,23 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { PostParticipant } from '../protocols';
+import { PostParticipantType } from '../protocols';
 import { ParticipantsService } from '../services/participants.services';
 
-export async function getAll(_req: Request, res: Response) {
-    const response = await ParticipantsService.Read();
+export async function GetAll(_req: Request, res: Response) {
+    const participants = await ParticipantsService.Read();
 
-    return res.send(response);
+    return res.send(participants);
 }
 
-export async function postParticipant(req: Request, res: Response) {
-    const { name, balance } = req.body as PostParticipant;
+export async function PostParticipant(req: Request, res: Response) {
+    const { name, balance } = req.body as PostParticipantType;
 
-    const participant = await ParticipantsService.Create(name, balance);
+    const newParticipant = await ParticipantsService.Create(name, balance);
 
-    return res.status(httpStatus.CREATED).send(participant);
+    return res.status(httpStatus.CREATED).send(newParticipant);
 }
 
 export const ParticipantsController = {
-    getAll,
-    postParticipant,
+    GetAll,
+    PostParticipant,
 };

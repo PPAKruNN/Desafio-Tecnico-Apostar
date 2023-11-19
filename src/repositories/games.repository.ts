@@ -1,23 +1,23 @@
 import { Bet, Game } from '@prisma/client';
-import { prisma } from '../database/database';
-import { resourceNotFound } from '../errors';
+import { Prisma } from '../database/database';
+import { ResourceNotFound } from '../errors';
 
 async function ReadAll(): Promise<Game[]> {
-    const result = await prisma.game.findMany();
+    const games = await Prisma.game.findMany();
 
-    return result;
+    return games;
 }
 
 async function ReadById(id: number): Promise<Game & { Bet: Bet[] }> {
     try {
-        const result = await prisma.game.findUniqueOrThrow({ where: { id }, include: { Bet: true } });
-        return result;
+        const gameWithBets = await Prisma.game.findUniqueOrThrow({ where: { id }, include: { Bet: true } });
+        return gameWithBets;
     } catch (error) {
-        throw resourceNotFound('Game');
+        throw ResourceNotFound('Game');
     }
 }
 async function Create(homeTeamName: string, awayTeamName: string): Promise<Game> {
-    const result = await prisma.game.create({
+    const newGame = await Prisma.game.create({
         data: {
             awayTeamName,
             homeTeamName,
@@ -26,17 +26,17 @@ async function Create(homeTeamName: string, awayTeamName: string): Promise<Game>
         },
     });
 
-    return result;
+    return newGame;
 }
 async function Finish(id: number, homeTeamScore: number, awayTeamScore: number): Promise<Game> {
     try {
-        const result = await prisma.game.update({
+        const finishedGame = await Prisma.game.update({
             data: { awayTeamScore, homeTeamScore, isFinished: true },
             where: { id, isFinished: false },
         });
-        return result;
+        return finishedGame;
     } catch (error) {
-        throw resourceNotFound('Game', 'or is already finished');
+        throw ResourceNotFound('Game', 'or is already finished');
     }
 }
 

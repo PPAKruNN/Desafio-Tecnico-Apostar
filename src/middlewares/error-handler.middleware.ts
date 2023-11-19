@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { ApplicationError } from '../errors';
 
-export function errorHandler(
+export function ErrorHandler(
     err: ApplicationError | Error,
     req: Request,
     res: Response,

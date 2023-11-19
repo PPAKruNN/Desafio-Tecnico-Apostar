@@ -1,7 +1,7 @@
 import Joi from 'joi';
-import { PostParticipant } from '../protocols';
+import { PostParticipantType } from '../protocols';
 
-export const postPayloadSchema = Joi.object<PostParticipant>({
+export const PostPayloadSchema = Joi.object<PostParticipantType>({
     name: Joi.string().trim().required(),
     balance: Joi.number().integer().positive().required(),
 }).required();

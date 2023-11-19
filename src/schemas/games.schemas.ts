@@ -1,12 +1,12 @@
 import Joi from 'joi';
-import { PostFinishGame, PostGame } from '../protocols';
+import { PostFinishGameType, PostGameType } from '../protocols';
 
-export const postGamePayload = Joi.object<PostGame>({
+export const PostGamePayload = Joi.object<PostGameType>({
     awayTeamName: Joi.string().trim().required(),
     homeTeamName: Joi.string().trim().required(),
 }).required();
 
-export const postFinishGamePayload = Joi.object<PostFinishGame>({
+export const PostFinishGamePayload = Joi.object<PostFinishGameType>({
     awayTeamScore: Joi.number().integer().positive().allow(0).required(),
     homeTeamScore: Joi.number().integer().positive().allow(0).required(),
 }).required();

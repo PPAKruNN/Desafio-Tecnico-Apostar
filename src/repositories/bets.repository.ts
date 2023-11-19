@@ -1,20 +1,20 @@
 import { Bet } from '@prisma/client';
-import { prisma } from '../database/database';
-import { resourceNotFound } from '../errors';
-import { PostBet } from '../protocols';
+import { Prisma } from '../database/database';
+import { ResourceNotFound } from '../errors';
+import { PostBetType } from '../protocols';
 
 async function ReadBetsByGame(gameId: number): Promise<Bet[]> {
     try {
-        const result = await prisma.bet.findMany({ where: { gameId } });
+        const bets = await Prisma.bet.findMany({ where: { gameId } });
 
-        return result;
+        return bets;
     } catch (error) {
-        throw resourceNotFound('Game');
+        throw ResourceNotFound('Game');
     }
 }
 
 async function UpdateManyBet(betsId: number[], amountWon: number, status: string) {
-    await prisma.bet.updateMany({
+    await Prisma.bet.updateMany({
         data: {
             amountWon,
             status,
@@ -24,7 +24,7 @@ async function UpdateManyBet(betsId: number[], amountWon: number, status: string
 }
 
 async function UpdateBet(betId: number, amountWon: number, status: string) {
-    await prisma.bet.update({
+    await Prisma.bet.update({
         data: {
             amountWon,
             status,
@@ -33,13 +33,13 @@ async function UpdateBet(betId: number, amountWon: number, status: string) {
     });
 }
 
-async function Create({ amountBet, awayTeamScore, homeTeamScore, gameId, participantId }: PostBet) {
-    const [BetResult] = await prisma.$transaction([
-        prisma.bet.create({ data: { amountBet, awayTeamScore, homeTeamScore, gameId, participantId } }),
-        prisma.participant.update({ data: { balance: { decrement: amountBet } }, where: { id: participantId } }),
+async function Create({ amountBet, awayTeamScore, homeTeamScore, gameId, participantId }: PostBetType) {
+    const [betResult] = await Prisma.$transaction([
+        Prisma.bet.create({ data: { amountBet, awayTeamScore, homeTeamScore, gameId, participantId } }),
+        Prisma.participant.update({ data: { balance: { decrement: amountBet } }, where: { id: participantId } }),
     ]);
 
-    return BetResult;
+    return betResult;
 }
 
 export const BetsRepository = {

@@ -1,36 +1,36 @@
 import { Participant } from '@prisma/client';
-import { prisma } from '../database/database';
-import { resourceNotFound } from '../errors';
+import { Prisma } from '../database/database';
+import { ResourceNotFound } from '../errors';
 
 export async function ReadMany(): Promise<Participant[]> {
-    const result = await prisma.participant.findMany();
+    const participants = await Prisma.participant.findMany();
 
-    return result;
+    return participants;
 }
 
 export async function ReadById(id: number) {
     try {
-        const result = await prisma.participant.findUniqueOrThrow({ where: { id } });
+        const participant = await Prisma.participant.findUniqueOrThrow({ where: { id } });
 
-        return result;
+        return participant;
     } catch (error) {
-        throw resourceNotFound('Participant');
+        throw ResourceNotFound('Participant');
     }
 }
 
 export async function Create(name: string, balance: number): Promise<Participant> {
-    const result = await prisma.participant.create({ data: { name, balance } });
+    const newParticipant = await Prisma.participant.create({ data: { name, balance } });
 
-    return result;
+    return newParticipant;
 }
 
 export async function UpdateParticipant(amountWon: number, participantId: number) {
-    const result = await prisma.participant.update({
+    const participant = await Prisma.participant.update({
         data: { balance: { increment: amountWon } },
         where: { id: participantId },
     });
 
-    return result;
+    return participant;
 }
 
 export const ParticipantsRepository = {

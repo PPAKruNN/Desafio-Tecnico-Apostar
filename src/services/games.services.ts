@@ -10,17 +10,17 @@ export type RewardType = {
 };
 
 async function Create(homeTeamName: string, awayTeamName: string) {
-    const result = await GamesRepository.Create(homeTeamName, awayTeamName);
+    const newGame = await GamesRepository.Create(homeTeamName, awayTeamName);
 
-    return result;
+    return newGame;
 }
 
 async function Finish(id: number, homeTeamScore: number, awayTeamScore: number) {
-    const result = await GamesRepository.Finish(id, homeTeamScore, awayTeamScore);
+    const finishedGame = await GamesRepository.Finish(id, homeTeamScore, awayTeamScore);
 
-    await UpdateBets(result);
+    await UpdateBets(finishedGame);
 
-    return result;
+    return finishedGame;
 }
 
 async function UpdateBets(game: Game) {
@@ -55,12 +55,12 @@ async function UpdateBets(game: Game) {
 function RewardCalculusPolicy(bets: Bet[], betSum: number, winnerBetSum: number) {
     const tax = 0.3;
 
-    const Rewards = bets.map((bet) => {
+    const rewards = bets.map((bet) => {
         bet.amountWon = Math.ceil((bet.amountBet / winnerBetSum) * betSum * (1 - tax));
         return { amountWon: bet.amountWon, participantId: bet.participantId, id: bet.id };
     });
 
-    return Rewards;
+    return rewards;
 }
 
 async function UpdateWinners(rewards: RewardType[]) {
@@ -87,12 +87,12 @@ async function ReadAll() {
 async function ReadOne(id: number) {
     const rawResult = await GamesRepository.ReadById(id);
 
-    const result = formatBetRawResult(rawResult);
+    const result = FormatBetRawResult(rawResult);
 
     return result;
 }
 
-function formatBetRawResult(obj: Game & { Bet: Bet[] }) {
+function FormatBetRawResult(obj: Game & { Bet: Bet[] }) {
     const bets = obj.Bet;
     delete obj.Bet;
 
