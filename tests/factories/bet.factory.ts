@@ -2,19 +2,19 @@ import { faker } from '@faker-js/faker';
 import { Game, Participant } from '@prisma/client';
 import { genParticipant } from './participants.factory';
 import { genGame } from './games.factory';
-import { prisma } from 'database/database';
-import { PostBet } from 'protocols';
+import { Prisma } from 'database/database';
+import { PostBetType } from 'protocols';
 
 type genBet = {
     game?: Game;
     participant?: Participant;
 };
 
-export async function genBetPayload({ game, participant }: genBet): Promise<PostBet> {
+export async function genBetPayload({ game, participant }: genBet): Promise<PostBetType> {
     const author = participant ?? (await genParticipant());
     const newGame = game ?? (await genGame());
 
-    const payload: PostBet = {
+    const payload: PostBetType = {
         gameId: newGame.id,
         participantId: author.id,
         awayTeamScore: faker.number.int({ min: 0, max: 1000000 }),
@@ -29,7 +29,7 @@ export async function genBet({ game, participant }: genBet) {
     const author = participant ?? (await genParticipant());
     const newGame = game ?? (await genGame());
 
-    const response = await prisma.bet.create({
+    const response = await Prisma.bet.create({
         data: {
             game: { connect: newGame },
             participant: { connect: author },

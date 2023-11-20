@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { prisma } from 'database/database';
-import { PostParticipant } from 'protocols';
+import { Prisma } from 'database/database';
+import { PostParticipantType } from 'protocols';
 
 export function genParticipantPayload() {
-    const payload: PostParticipant = {
+    const payload: PostParticipantType = {
         name: faker.person.fullName(),
         balance: faker.number.int({ min: 10, max: 599999 }),
     };
@@ -12,12 +12,12 @@ export function genParticipantPayload() {
 }
 
 export async function genParticipant() {
-    const payload: PostParticipant = {
+    const payload: PostParticipantType = {
         name: faker.person.fullName(),
         balance: faker.number.int({ min: 10, max: 599999 }),
     };
 
-    const participant = await prisma.participant.create({
+    const participant = await Prisma.participant.create({
         data: payload,
     });
 

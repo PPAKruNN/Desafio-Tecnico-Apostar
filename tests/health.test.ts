@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import httpStatus from 'http-status';
 import { app } from '../src/app';
-import { prisma } from '../src/database/database';
+import { Prisma } from '../src/database/database';
 import { cleanDb } from './helpers';
 
 const server = supertest(app);
@@ -17,7 +17,7 @@ describe('Is my application correctly installed?', () => {
 
     test('Should connect to db and be able to perform any operation', async () => {
         // Change this to a model of your prisma schema.
-        const response = await prisma.game.findMany();
+        const response = await Prisma.game.findMany();
         expect(response.length).toBe(0);
     });
 

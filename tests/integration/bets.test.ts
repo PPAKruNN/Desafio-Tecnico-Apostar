@@ -7,7 +7,7 @@ import { genBetPayload } from '../factories/bet.factory';
 import { genFinishedGame, genGame } from '../factories/games.factory';
 import { genParticipant } from '../factories/participants.factory';
 import { app } from 'app';
-import { prisma } from 'database/database';
+import { Prisma } from 'database/database';
 
 const server = supertest(app);
 
@@ -26,7 +26,7 @@ describe(`POST ${path}`, () => {
         payload.amountBet = 1;
 
         const response = await server.post(path).send(payload);
-        const databaseConfirm = await prisma.bet.findFirst({ where: { participantId: payload.participantId } });
+        const databaseConfirm = await Prisma.bet.findFirst({ where: { participantId: payload.participantId } });
 
         const objectMatcher: Partial<Bet> = {
             id: expect.any(Number),
@@ -64,7 +64,7 @@ describe(`POST ${path}`, () => {
         const payload = await genBetPayload({ participant: oldParticipant });
         await server.post(path).send(payload);
 
-        const newerParticipant = await prisma.participant.findUnique({ where: { id: oldParticipant.id } });
+        const newerParticipant = await Prisma.participant.findUnique({ where: { id: oldParticipant.id } });
         expect(newerParticipant.balance).toBeLessThan(oldParticipant.balance); // newer < old === old - amountBet < old;
     });
 
@@ -90,8 +90,8 @@ describe(`POST ${path}`, () => {
     test('should return 404 if participantId or gameId is a invalid id', async () => {
         const payload = await genBetPayload({});
 
-        await prisma.participant.delete({ where: { id: payload.participantId } });
-        await prisma.game.delete({ where: { id: payload.gameId } });
+        await Prisma.participant.delete({ where: { id: payload.participantId } });
+        await Prisma.game.delete({ where: { id: payload.gameId } });
 
         const response = await server.post(path).send(payload);
 

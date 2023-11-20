@@ -7,7 +7,7 @@ import { cleanDb } from '../helpers';
 import { genBet } from '../factories/bet.factory';
 import { genParticipant } from '../factories/participants.factory';
 import { app } from 'app';
-import { prisma } from 'database/database';
+import { Prisma } from 'database/database';
 
 const server = supertest(app);
 
@@ -96,8 +96,8 @@ describe(`POST ${path}`, () => {
 
             await server.post(`${path}/${game.id}/finish`).send(payload);
 
-            const updatedBet1 = await prisma.bet.findUnique({ where: { id: bet1.id } });
-            const updatedBet2 = await prisma.bet.findUnique({ where: { id: bet2.id } });
+            const updatedBet1 = await Prisma.bet.findUnique({ where: { id: bet1.id } });
+            const updatedBet2 = await Prisma.bet.findUnique({ where: { id: bet2.id } });
 
             expect(updatedBet1.status).toBe('WON');
             expect(updatedBet2.status).toBe('LOST');
@@ -118,14 +118,14 @@ describe(`POST ${path}`, () => {
 
             await server.post(`${path}/${game.id}/finish`).send(payload);
 
-            const updatedParticipant = await prisma.participant.findUnique({ where: { id: oldParticipant.id } });
+            const updatedParticipant = await Prisma.participant.findUnique({ where: { id: oldParticipant.id } });
 
             expect(updatedParticipant.balance).toBeGreaterThan(oldParticipant.balance);
         });
 
         test('should return 404 if id is invalid', async () => {
             const game = await genGame();
-            await prisma.game.delete({ where: { id: game.id } });
+            await Prisma.game.delete({ where: { id: game.id } });
             const payload = await genFinishGamePayload();
 
             const result = await server.post(`${path}/${game.id}/finish`).send(payload);
@@ -217,7 +217,7 @@ describe(`GET ${path}`, () => {
 
         test("Should return 404 if id doesn't exist", async () => {
             const newGame = await genGame();
-            await prisma.game.delete({ where: { id: newGame.id } });
+            await Prisma.game.delete({ where: { id: newGame.id } });
 
             const response = await server.get(`${path}/${newGame.id}`);
             expect(response.statusCode).toBe(httpStatus.NOT_FOUND);
