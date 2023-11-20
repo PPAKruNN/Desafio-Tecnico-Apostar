@@ -2,10 +2,10 @@ import supertest from 'supertest';
 import { faker } from '@faker-js/faker';
 import { Bet } from '@prisma/client';
 import httpStatus from 'http-status';
-import { cleanDb } from '../helpers';
-import { genBetPayload } from '../factories/bet.factory';
-import { genFinishedGame, genGame } from '../factories/games.factory';
-import { genParticipant } from '../factories/participants.factory';
+import { CleanDb } from '../helpers';
+import { GenBetPayload } from '../factories/bet.factory';
+import { GenFinishedGame, GenGame } from '../factories/games.factory';
+import { GenParticipant } from '../factories/participants.factory';
 import { app } from 'app';
 import { Prisma } from 'database/database';
 
@@ -14,13 +14,13 @@ const server = supertest(app);
 const path = '/bets';
 
 beforeAll(async () => {
-    await cleanDb();
+    await CleanDb();
 });
 
 describe(`POST ${path}`, () => {
     test('should create a bet and return 201', async () => {
-        const game = await genGame();
-        const payload = await genBetPayload({ game });
+        const game = await GenGame();
+        const payload = await GenBetPayload({ game });
 
         // Ensure balance is greater than the amount bet;
         payload.amountBet = 1;
@@ -59,9 +59,9 @@ describe(`POST ${path}`, () => {
     });
 
     test('should discount users balance when creating a bet', async () => {
-        const oldParticipant = await genParticipant();
+        const oldParticipant = await GenParticipant();
 
-        const payload = await genBetPayload({ participant: oldParticipant });
+        const payload = await GenBetPayload({ participant: oldParticipant });
         await server.post(path).send(payload);
 
         const newerParticipant = await Prisma.participant.findUnique({ where: { id: oldParticipant.id } });
@@ -69,8 +69,8 @@ describe(`POST ${path}`, () => {
     });
 
     test('should return 400 if user try to bet more than his balance', async () => {
-        const participant = await genParticipant();
-        const payload = await genBetPayload({ participant });
+        const participant = await GenParticipant();
+        const payload = await GenBetPayload({ participant });
 
         payload.amountBet = participant.balance + 1;
 
@@ -79,8 +79,8 @@ describe(`POST ${path}`, () => {
     });
 
     test('should return 400 if bet in a finished game', async () => {
-        const game = await genFinishedGame();
-        const payload = await genBetPayload({ game });
+        const game = await GenFinishedGame();
+        const payload = await GenBetPayload({ game });
 
         const response = await server.post(path).send(payload);
 
@@ -88,7 +88,7 @@ describe(`POST ${path}`, () => {
     });
 
     test('should return 404 if participantId or gameId is a invalid id', async () => {
-        const payload = await genBetPayload({});
+        const payload = await GenBetPayload({});
 
         await Prisma.participant.delete({ where: { id: payload.participantId } });
         await Prisma.game.delete({ where: { id: payload.gameId } });

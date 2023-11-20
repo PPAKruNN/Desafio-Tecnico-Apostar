@@ -2,10 +2,10 @@ import supertest from 'supertest';
 import { Bet, Game } from '@prisma/client';
 import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
-import { genFinishGamePayload, genFinishedGame, genGame, genGamePayload } from '../factories/games.factory';
-import { cleanDb } from '../helpers';
-import { genBet } from '../factories/bet.factory';
-import { genParticipant } from '../factories/participants.factory';
+import { GenFinishGamePayload, GenFinishedGame, GenGame, GenGamePayload } from '../factories/games.factory';
+import { CleanDb } from '../helpers';
+import { GenBet } from '../factories/bet.factory';
+import { GenParticipant } from '../factories/participants.factory';
 import { app } from 'app';
 import { Prisma } from 'database/database';
 
@@ -14,12 +14,12 @@ const server = supertest(app);
 const path = '/games';
 
 beforeEach(async () => {
-    await cleanDb();
+    await CleanDb();
 });
 
 describe(`POST ${path}`, () => {
     test('Should create a game and return 201', async () => {
-        const payload = await genGamePayload();
+        const payload = await GenGamePayload();
 
         const response = await server.post(path).send(payload);
 
@@ -57,8 +57,8 @@ describe(`POST ${path}`, () => {
 
     describe(`POST ${path}/:id/finish`, () => {
         test('should finish a game', async () => {
-            const game = await genGame();
-            const payload = genFinishGamePayload();
+            const game = await GenGame();
+            const payload = GenFinishGamePayload();
 
             const result = await server.post(`${path}/${game.id}/finish`).send(payload);
             expect(result.statusCode).toBe(httpStatus.OK);
@@ -77,20 +77,20 @@ describe(`POST ${path}`, () => {
         });
 
         test('should respond with 404 if try to finish a game that is already finished', async () => {
-            const game = await genFinishedGame();
-            const payload = genFinishGamePayload();
+            const game = await GenFinishedGame();
+            const payload = GenFinishGamePayload();
 
             const result = await server.post(`${path}/${game.id}/finish`).send(payload);
             expect(result.statusCode).toBe(httpStatus.NOT_FOUND);
         });
 
         test("should update game's bets status and amountWon", async () => {
-            const game = await genGame();
-            const bet1 = await genBet({ game });
-            const bet2 = await genBet({ game });
+            const game = await GenGame();
+            const bet1 = await GenBet({ game });
+            const bet2 = await GenBet({ game });
 
             // The game result are going to be equal to bet1 prediction.
-            const payload = genFinishGamePayload();
+            const payload = GenFinishGamePayload();
             payload.awayTeamScore = bet1.awayTeamScore;
             payload.homeTeamScore = bet1.homeTeamScore;
 
@@ -107,12 +107,12 @@ describe(`POST ${path}`, () => {
         });
 
         test("should affect game's participants balance if they won", async () => {
-            const game = await genGame();
-            const oldParticipant = await genParticipant();
-            const bet = await genBet({ participant: oldParticipant, game });
+            const game = await GenGame();
+            const oldParticipant = await GenParticipant();
+            const bet = await GenBet({ participant: oldParticipant, game });
 
             // The game result are going to be equal to bet prediction.
-            const payload = genFinishGamePayload();
+            const payload = GenFinishGamePayload();
             payload.awayTeamScore = bet.awayTeamScore;
             payload.homeTeamScore = bet.homeTeamScore;
 
@@ -124,16 +124,16 @@ describe(`POST ${path}`, () => {
         });
 
         test('should return 404 if id is invalid', async () => {
-            const game = await genGame();
+            const game = await GenGame();
             await Prisma.game.delete({ where: { id: game.id } });
-            const payload = await genFinishGamePayload();
+            const payload = await GenFinishGamePayload();
 
             const result = await server.post(`${path}/${game.id}/finish`).send(payload);
             expect(result.statusCode).toBe(httpStatus.NOT_FOUND);
         });
 
         test('should return 422 if data is in invalid format or empty', async () => {
-            const game = await genGame();
+            const game = await GenGame();
 
             const invalidPayload = {
                 homeTeamName: faker.color.lch(),
@@ -155,7 +155,7 @@ describe(`POST ${path}`, () => {
 
 describe(`GET ${path}`, () => {
     test('Should get all registered games', async () => {
-        const newGame = await genGame();
+        const newGame = await GenGame();
 
         const response = await server.get(path);
 
@@ -176,8 +176,8 @@ describe(`GET ${path}`, () => {
 
     describe(`GET ${path}/:id`, () => {
         test('Should return a game data with its bets', async () => {
-            const newGame = await genGame();
-            const bet = await genBet({ game: newGame });
+            const newGame = await GenGame();
+            const bet = await GenBet({ game: newGame });
 
             const response = await server.get(`${path}/${newGame.id}`);
 
@@ -197,7 +197,7 @@ describe(`GET ${path}`, () => {
         });
 
         test('Should return a game data with a empty bet array', async () => {
-            const newGame = await genGame();
+            const newGame = await GenGame();
 
             const response = await server.get(`${path}/${newGame.id}`);
 
@@ -216,7 +216,7 @@ describe(`GET ${path}`, () => {
         });
 
         test("Should return 404 if id doesn't exist", async () => {
-            const newGame = await genGame();
+            const newGame = await GenGame();
             await Prisma.game.delete({ where: { id: newGame.id } });
 
             const response = await server.get(`${path}/${newGame.id}`);

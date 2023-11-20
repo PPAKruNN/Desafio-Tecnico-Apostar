@@ -2,12 +2,12 @@ import supertest from 'supertest';
 import httpStatus from 'http-status';
 import { app } from '../src/app';
 import { Prisma } from '../src/database/database';
-import { cleanDb } from './helpers';
+import { CleanDb } from './helpers';
 
 const server = supertest(app);
 
 beforeEach(async () => {
-    await cleanDb();
+    await CleanDb();
 });
 
 describe('Is my application correctly installed?', () => {

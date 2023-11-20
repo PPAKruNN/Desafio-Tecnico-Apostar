@@ -1,13 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { Bet, Game } from '@prisma/client';
+import { Game } from '@prisma/client';
 import { Prisma } from 'database/database';
 import { PostFinishGameType, PostGameType } from 'protocols';
 
-type genGame = {
-    bet?: Bet;
-};
-
-export function genGamePayload(): PostGameType {
+export function GenGamePayload(): PostGameType {
     const payload: PostGameType = {
         homeTeamName: faker.company.name(),
         awayTeamName: faker.company.name(),
@@ -16,7 +12,7 @@ export function genGamePayload(): PostGameType {
     return payload;
 }
 
-export async function genGame(): Promise<Game> {
+export async function GenGame(): Promise<Game> {
     const payload: PostGameType = {
         homeTeamName: faker.company.name(),
         awayTeamName: faker.company.name(),
@@ -33,7 +29,7 @@ export async function genGame(): Promise<Game> {
     return game;
 }
 
-export function genFinishGamePayload() {
+export function GenFinishGamePayload() {
     const payload: PostFinishGameType = {
         awayTeamScore: faker.number.int({ min: 0, max: 888888 }),
         homeTeamScore: faker.number.int({ min: 0, max: 888888 }),
@@ -42,7 +38,7 @@ export function genFinishGamePayload() {
     return payload;
 }
 
-export async function genFinishedGame(): Promise<Game> {
+export async function GenFinishedGame(): Promise<Game> {
     const payload: PostFinishGameType & PostGameType = {
         homeTeamName: faker.company.name(),
         awayTeamName: faker.company.name(),

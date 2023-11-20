@@ -2,20 +2,20 @@ import supertest from 'supertest';
 import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
 import { app } from '../../src/app';
-import { cleanDb } from '../helpers';
-import { genParticipant, genParticipantPayload } from '../factories/participants.factory';
+import { CleanDb } from '../helpers';
+import { GenParticipant, GenParticipantPayload } from '../factories/participants.factory';
 
 const server = supertest(app);
 
 beforeEach(async () => {
-    await cleanDb();
+    await CleanDb();
 });
 
 const path = '/participants';
 
 describe(`POST ${path}`, () => {
     test('should be able to create a user', async () => {
-        const payload = genParticipantPayload();
+        const payload = GenParticipantPayload();
 
         const response = await server.post(path).send(payload);
 
@@ -32,7 +32,7 @@ describe(`POST ${path}`, () => {
     });
 
     test('should respond 400 when balance is below 10', async () => {
-        const payload = genParticipantPayload();
+        const payload = GenParticipantPayload();
         payload.balance = faker.number.int({ max: 9, min: 0 });
 
         const response = await server.post(path).send(payload);
@@ -64,7 +64,7 @@ describe(`POST ${path}`, () => {
 
 describe(`GET ${path}`, () => {
     test('should return all participants data inside an array and a 200 status', async () => {
-        const participant = await genParticipant();
+        const participant = await GenParticipant();
 
         const response = await server.get(path);
 
