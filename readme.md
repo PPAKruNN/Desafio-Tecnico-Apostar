@@ -1,12 +1,12 @@
 # Quer apostar quanto?
 
-Backend application for the junior backend developer position technical challenge at Driven. In this application, you can access a betting backend that allows users to register games, place bets on them, and earn money for it!
+Aplicação de backend para o desafio técnico da posição de desenvolvedor backend júnior na Driven. Nesta aplicação, você pode acessar um backend de apostas que permite aos usuários registrar jogos, fazer apostas neles e ganhar dinheiro com isso!
 
-# Demo
+# Demonstração
 
--   [Deploy link](https://desafio-tecnico-l658.onrender.com)
+-   [Link de implantação](https://desafio-tecnico-l658.onrender.com)
 
-# Stack:
+# Tecnologias Utilizadas:
 
 -   Node v18.16.0
 -   PostgreSQL v14.9
@@ -16,61 +16,242 @@ Backend application for the junior backend developer position technical challeng
 -   Prisma
 -   Joi
 
-# How it works?
+# Como funciona?
 
-This project is a REST API for betting on games. It has 3 entities, Game, Bet and Participant, their
+Este projeto consiste em uma API REST para apostas em jogos. Ele possui 3 entidades: Jogo, Aposta e Participante.
 
-## Check the tests:
+### **POST** `/participants`
 
-For running tests, run this command:
+-   Cria um participante com um saldo inicial específico.
+-   **Entrada**: nome e saldo inicial do participante.
+    ```tsx
+    {
+        name: string;
+        balance: number; // representado em centavos, ou seja, R$ 10,00 -> 1000
+    }
+    ```
+-   **Saída**: objeto do participante criado.
+    ```tsx
+    {
+        id: number;
+        createdAt: string;
+        updatedAt: string;
+        name: string;
+        balance: number; // representado em centavos, ou seja, R$ 10,00 -> 1000
+    }
+    ```
+
+### **POST** `/games`
+
+-   Cria um novo jogo, com placar inicial 0x0 e marcado como não finalizado.
+-   **Entrada**: nome do time da casa e do time visitante.
+    ```tsx
+    {
+        homeTeamName: string;
+        awayTeamName: string;
+    }
+    ```
+-   **Saída**: o objeto do jogo criado.
+    ```tsx
+    {
+        id: number;
+        createdAt: string;
+        updatedAt: string;
+        homeTeamName: string;
+        awayTeamName: string;
+        homeTeamScore: number; // inicialmente 0
+        awayTeamScore: number; // inicialmente 0
+        isFinished: boolean; // inicialmente false
+    }
+    ```
+
+### **POST** `/bets`
+
+-   Registra uma aposta de um participante em um determinado jogo. O valor da aposta é descontado imediatamente do saldo do participante.
+-   **Entrada**:
+    ```tsx
+    {
+        homeTeamScore: number;
+        awayTeamScore: number;
+        amountBet: number; // representado em centavos, ou seja, R$ 10,00 -> 1000
+        gameId: number;
+        participantId: number;
+    }
+    ```
+-   **Saída**: o objeto da aposta criada.
+    ```tsx
+    {
+        id: number;
+        createdAt: string;
+        updatedAt: string;
+        homeTeamScore: number;
+        awayTeamScore: number;
+        amountBet: number; // representado em centavos, ou seja, R$ 10,00 -> 1000
+        gameId: number;
+        participantId: number;
+        status: string; // podendo ser PENDING, WON ou LOST
+        amountWon: number || null; // nulo quando a aposta ainda está PENDING; número caso a aposta já esteja WON ou LOST, com o valor ganho representado em centavos
+    }
+    ```
+
+### **POST** `/games/:id/finish`
+
+-   Finaliza um jogo e atualiza todas as apostas vinculadas a ele, calculando o valor ganho em cada uma e atualizando o saldo dos participantes vencedores.
+-   **Entrada**: placar final do jogo.
+    ```tsx
+    {
+        homeTeamScore: number;
+        awayTeamScore: number;
+    }
+    ```
+-   **Saída**: o objeto do jogo atualizado.
+    ```tsx
+    {
+        id: number;
+        createdAt: string;
+        updatedAt: string;
+        homeTeamName: string;
+        awayTeamName: string;
+        homeTeamScore: number;
+        awayTeamScore: number;
+        isFinished: boolean;
+    }
+    ```
+
+### **GET** `/participants`
+
+-   Retorna todos os participantes e seus respectivos saldos.
+-   **Saída**: array de todos os participantes.
+    ```tsx
+    [
+        {
+            id: number;
+            createdAt: string;
+            updatedAt: string;
+            name: string;
+            balance: number; // representado em centavos, ou seja, R$ 10,00 -> 1000
+        },
+        {...}
+    ]
+    ```
+
+### **GET** `/games`
+
+-   Retorna todos os jogos cadastrados.
+-   **Saída**: array de todos os jogos
+    ```tsx
+    [
+        {
+            id: number;
+            createdAt: string;
+            updatedAt: string;
+            homeTeamName: string;
+            awayTeamName: string;
+            homeTeamScore: number;
+            awayTeamScore: number;
+            isFinished: boolean;
+        },
+        {...}
+    ]
+    ```
+
+### **GET** `/games/:id`
+
+-   Retorna os dados de um jogo junto com as apostas vinculadas a ele.
+-   **Saída**: o objeto do jogo contendo a array de apostas realizadas nele.
+    ```tsx
+    {
+        id: number;
+        createdAt: string;
+        updatedAt: string;
+        homeTeamName: string;
+        awayTeamName: string;
+        homeTeamScore: number;
+        awayTeamScore: number;
+        isFinished: boolean;
+        bets: [
+            {
+                id: number;
+                createdAt: string;
+                updatedAt: string;
+                homeTeamScore: number;
+                awayTeamScore: number;
+                amountBet: number; // representado em centavos, ou seja, R$ 10,00 -> 1000
+                gameId: number;
+                participantId: number;
+                status: string; // podendo ser PENDING, WON ou LOST
+                amountWon: number || null; // nulo quando a aposta ainda está PENDING; número caso a aposta já esteja WON ou LOST, com o valor ganho representado em centavos
+            },
+            {...}
+        ]
+    }
+    ```
+
+## Verifique os testes:
+
+Para executar os testes, use este comando:
 
 ```
+
 npm test
-```
-
-For check the test coverage, run:
 
 ```
+
+Para verificar a cobertura dos testes, execute:
+
+```
+
 npm test -- --coverage
-```
-
-## How to run?
-
-Install dependencies by running:
 
 ```
-    npm install
-```
 
-Update your enviroment info on .env file.
+## Como executar?
 
--   Create two copies of ".env.example" file.
--   Rename those two copies to ".env" and ".env.test"
--   Adjust the file with your information following the example structure.
--   Confirm that your DATABASE_URL string points to different databases.
-
-Generate database and apply migrations:
+Instale as dependências executando:
 
 ```
-    npm run migrate:dev
-```
 
-Now, run the code in development mode.
+npm install
 
 ```
+
+Atualize as informações do seu ambiente no arquivo .env.
+
+-   Crie duas cópias do arquivo ".env.example".
+-   Renomeie essas duas cópias para ".env" e ".env.test".
+-   Ajuste o arquivo com suas informações seguindo a estrutura de exemplo.
+-   Confirme se sua string DATABASE_URL aponta para bancos de dados diferentes.
+
+Gere o banco de dados e aplique as migrações:
+
+```
+
+npm run migrate:dev
+
+```
+
+Agora, execute o código em modo de desenvolvimento.
+
+```
+
 npm run dev
-```
-
-If you want to run in production mode, run the below commands:
-
-Build the project:
 
 ```
+
+Se desejar executar em modo de produção, execute os comandos abaixo:
+
+Faça a build do projeto:
+
+```
+
 npm run build
-```
-
-and then start the server:
 
 ```
+
+e em seguida inicie o servidor:
+
+```
+
 node ./dist/src/server.js
+
 ```
