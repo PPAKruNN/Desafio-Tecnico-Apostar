@@ -1,6 +1,6 @@
 # Quer apostar quanto?
 
-Aplicação de backend para o desafio técnico da posição de desenvolvedor backend júnior na Driven. Nesta aplicação, você pode acessar um backend de apostas que permite aos usuários registrar jogos, fazer apostas neles e ganhar dinheiro com isso!
+Nesta aplicação, você pode acessar um backend de apostas que permite aos usuários registrar jogos, fazer apostas neles e ganhar dinheiro com isso!
 
 # Demonstração
 
